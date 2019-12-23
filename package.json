@@ -1,0 +1,32 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "description": "SplicePHP Lamp Stack",
+  "main": "index.js",
+  "scripts": {
+    "setup": "run/setup",
+    "start": "docker-compose up -d",
+    "watch": "docker-compose up",
+    "start-force": "docker-compose rm -f&&docker-compose up -d",
+    "stop": "docker-compose down",
+    "restart": "npm run stop&&npm run build&&npm run start",
+    "terminate": "docker-compose down&&docker-compose rm -f",
+    "build": "docker-compose build --build-arg USER=$USER --build-arg GROUP=$(id -gn)",
+    "rebuild": "run/rebuild",
+    "root": "run/root",
+    "bash": "run/bash",
+    "bundle": "run/bundle",
+    "kill-confilcts": "run/nuke",
+    "publish": "bin/bash/publish $1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SplicePHP/docker-compose-lamp.git"
+  },
+  "author": "Dieter Gribnitz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SplicePHP/docker-compose-lamp/issues"
+  },
+  "homepage": "https://github.com/SplicePHP/docker-compose-lamp#readme"
+}

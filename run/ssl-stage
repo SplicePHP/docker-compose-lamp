@@ -1,0 +1,16 @@
+#!/bin/bash
+cd $(dirname $0)/..
+while read line; do export "$line";
+done < .env
+
+sudo docker run -it --rm \
+  -v $PWD/var/ssl/etc/letsencrypt:/etc/letsencrypt \
+  -v $PWD/var/ssl/lib/letsencrypt:/var/lib/letsencrypt \
+  -v $PWD/www:/data/letsencrypt \
+  -v $PWD/var/ssl/log/letsencrypt:/var/log/letsencrypt \
+  certbot/certbot \
+  certonly --webroot \
+  --register-unsafely-without-email --agree-tos \
+  --webroot-path=/data/letsencrypt \
+  --staging \
+  -d $DOMAIN

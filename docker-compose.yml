@@ -1,31 +1,64 @@
-version: "3"
+version: "3.7"
 
 services:
-  webserver:
+  server:
+    user: "${USER}:${GROUP}"
+    expose:
+      - 80
+      - 443
+      - 8443
     build: 
       context: ./bin/webserver
-    container_name: '7.4.x-webserver'
+      args:
+        USER: ${USER}
+        GROUP: ${GROUP}
+        APACHE_RUN_USER: ${APACHE_RUN_USER}
+        APACHE_RUN_GROUP: ${APACHE_RUN_GROUP}
+        DOMAIN: ${DOMAIN}
+    environment:
+      USER: ${USER}
+      GROUP: ${GROUP}
+      EMAIL: ${EMAIL}
+      APACHE_RUN_USER: ${APACHE_RUN_USER}
+      APACHE_RUN_GROUP: ${APACHE_RUN_GROUP}
+      XDEBUG_CONFIG: remote_host=${LANIP}
+      PROJECT: ${PROJECT}
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: '0' # Allow non-root user to bind to port 80
+    # tmpfs: /run/apache2:uid=$APACHE_RUN_USER # Fix custom user permissions
+    container_name: '${PROJECT}-server'
     restart: 'always'
     ports:
-      - "${HOST_MACHINE_UNSECURE_HOST_PORT}:80"
-      - "${HOST_MACHINE_SECURE_HOST_PORT}:443"
+      - "${PORT_HTTP}:80"
+      - "${PORT_HTTPS}:443"
+      - "${PORT_XTERM}:8443"
     links: 
       - mysql
     volumes: 
       - ${DOCUMENT_ROOT-./www}:/var/www/html
+      - ${UTILITY_ROOT-./var/utility}:/var/www/utility
       - ${PHP_INI-./config/php/php.ini}:/usr/local/etc/php/php.ini
       - ${VHOSTS_DIR-./config/vhosts}:/etc/apache2/sites-enabled
-      - ${LOG_DIR-./logs/apache2}:/var/log/apache2
+      - ${LOG_DIR-./var/logs/apache2}:/var/log/apache2
+      - ${HOME_DIR-./var/home}:/home/$USER
+      - ./config/locale:/etc/default/locale
+      - ./var/ssl/etc/letsencrypt/live:/etc/letsencrypt/live
+      # - ./var/ssl/etc/letsencrypt/live/${DOMAIN}/fullchain.pem:/etc/letsencrypt/live/${DOMAIN}/fullchain.pem
+      # - ./var/ssl/etc/letsencrypt/live/${DOMAIN}/privkey.pem:/etc/letsencrypt/live/${DOMAIN}/privkey.pem
   mysql:
+    user: "${USER}:${GROUP}"
     build:
       context: "./bin/${DATABASE}"
-    container_name: 'mysql'
+      args:
+        USER: ${USER}
+        GROUP: ${GROUP}
+    container_name: '${PROJECT}-mysql'
     restart: 'always'
     ports:
-      - "${HOST_MACHINE_MYSQL_PORT}:3306"
+      - "${PORT_MYSQL}:3306"
     volumes: 
-      - ${MYSQL_DATA_DIR-./data/mysql}:/var/lib/mysql
-      - ${MYSQL_LOG_DIR-./logs/mysql}:/var/log/mysql
+      - ${MYSQL_DATA_DIR-./var/data/mysql}:/var/lib/mysql
+      - ${MYSQL_LOG_DIR-./var/logs/mysql}:/var/log/mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -33,11 +66,11 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: 'sc-phpmyadmin'
+    container_name: '${PROJECT}-phpmyadmin'
     links:
       - mysql
     environment:
-      PMA_HOST: mysql
+      PMA_HOST: ${PROJECT}-mysql
       PMA_PORT: 3306
       PMA_USER: ${MYSQL_USER}
       PMA_PASSWORD: ${MYSQL_PASSWORD}
@@ -45,11 +78,11 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - '8080:80'
+      - ${PORT_PHPMYADMIN}:80
     volumes: 
       - /sessions
   redis:
-    container_name: 'sc-redis'
+    container_name: '${PROJECT}-redis'
     image: redis:latest
     ports:
-      - "${HOST_MACHINE_REDIS_PORT}:6379"
+      - "${PORT_REDIS}:6379"
