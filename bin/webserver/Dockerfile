@@ -175,7 +175,8 @@ RUN sudo apt-get -y install \
     libjpeg-dev \
     libgif-dev \
     # python3.7-dev \
-    xz-utils
+    xz-utils \
+    openssh
 
 
 RUN echo "PATH=\"/home/$USER/bin:\$PATH\"" >> ~/.bashrc
