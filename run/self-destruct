@@ -1,0 +1,9 @@
+#!/bin/bash
+cd $(dirname $0)/..
+DIRNAME=`basename "$PWD"`
+run/stop
+cd ..
+rm -rf "$DIRNAME"
+echo "Project Removed"
+
+
