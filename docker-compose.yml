@@ -14,11 +14,11 @@ services:
         GROUP: ${GROUP}
         APACHE_RUN_USER: ${APACHE_RUN_USER}
         APACHE_RUN_GROUP: ${APACHE_RUN_GROUP}
-        DOMAIN: ${DOMAIN}
     environment:
       USER: ${USER}
       GROUP: ${GROUP}
       EMAIL: ${EMAIL}
+      DOMAIN: ${DOMAIN}
       APACHE_RUN_USER: ${APACHE_RUN_USER}
       APACHE_RUN_GROUP: ${APACHE_RUN_GROUP}
       XDEBUG_CONFIG: remote_host=${LANIP}
