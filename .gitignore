@@ -1,7 +1,14 @@
 /.env
 /.vscode
-# /config/*
+/config/*
 /data/*
 /logs/*
-# /www/**
+/www/**
 .DS_Store
+/var/logs/
+/var/data/
+/var/tmp/
+/var/home/
+/www
+.app
+.env
