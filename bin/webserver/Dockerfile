@@ -176,7 +176,7 @@ RUN sudo apt-get -y install \
     libgif-dev \
     # python3.7-dev \
     xz-utils \
-    openssh
+    openssh-server
 
 
 RUN echo "PATH=\"/home/$USER/bin:\$PATH\"" >> ~/.bashrc
