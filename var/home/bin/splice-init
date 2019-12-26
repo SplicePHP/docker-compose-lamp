@@ -24,5 +24,6 @@ composer config secure-http false
 composer require splicephp/core
 #bin/cake plugin load Splice/Core -r -b
 echo "Plugin::load('Splice/Core', ['bootstrap' => true, 'routes' => true]);" >> config/bootstrap.php
+chmod +x bin/cake
 bin/cake Splice/Core.project install
 
