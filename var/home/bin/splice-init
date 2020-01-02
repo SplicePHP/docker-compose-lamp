@@ -21,7 +21,7 @@ rm -r project
 composer config "minimum-stability" dev
 composer config repositories.local composer "https://splicephp.gitlab.io/pkg/"
 composer config secure-http false
-composer require splicephp/core
+composer require splicephp/core:4.x
 #bin/cake plugin load Splice/Core -r -b
 echo "Plugin::load('Splice/Core', ['bootstrap' => true, 'routes' => true]);" >> config/bootstrap.php
 chmod +x bin/cake
